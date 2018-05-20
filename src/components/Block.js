@@ -8,7 +8,7 @@ class Block extends Component {
   state = {
     blockData: "I love vittoria",
     blockDifficulty: 3,
-    previousHash: "",
+    previousHash: this.props.prevHash,
     blockNonce: 0,
     blockHashValue: "",
     blockMined: false,
@@ -17,7 +17,10 @@ class Block extends Component {
 
   onMineClick = async () => {
     let currNonce = this.state.blockNonce;
-    await this.setState({ blockMined: false });
+    await this.setState({
+      blockMined: false,
+      blockTouched: true
+    });
 
     while (!this.state.blockMined) {
       this.hashBlock(currNonce, true);
@@ -40,13 +43,17 @@ class Block extends Component {
 
     if (!mine) {
       await this.setState({ blockHashValue: hashValue });
+      this.props.setNextHash(hashValue);
     }
 
     if (
       hashValue.substr(0, this.state.blockDifficulty) ===
       "0".repeat(this.state.blockDifficulty)
     ) {
-      await this.setState({ blockMined: true, blockHashValue: hashValue });
+      await this.setState({
+        blockMined: true,
+        blockHashValue: hashValue
+      });
     }
   };
 
@@ -130,7 +137,7 @@ class Block extends Component {
         <Form.Field>
           <Checkbox label="Mined" disabled checked={this.state.blockMined} />
         </Form.Field>
-        <Button type="mine" onClick={this.onMineClick}>
+        <Button primary onClick={this.onMineClick}>
           Mine
         </Button>
       </Form>
