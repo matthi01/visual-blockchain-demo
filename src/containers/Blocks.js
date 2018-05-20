@@ -6,20 +6,32 @@ import "./Blocks.css";
 
 class Blocks extends Component {
   state = {
-    prevHash: "",
-    blockList: []
+    prevHashArr: [""],
+    blockList: [
+      <Block
+        blockNumber={0}
+        prevHash=""
+        setNextHash={(blockNumber, hash) => this.setNextHash(blockNumber, hash)}
+      />
+    ]
   };
 
-  setNextHash = hash => {
-    this.setState({ prevHash: hash });
-    console.log(this.state.prevHash);
+  setNextHash = (blockNumber, hash) => {
+    let newPrevHashArr = this.state.prevHashArr.slice();
+    newPrevHashArr[blockNumber + 1] = hash;
+
+    this.setState({
+      prevHashArr: newPrevHashArr
+    });
+    console.log(newPrevHashArr);
   };
 
   onAddBlockClick = () => {
     let newBlock = (
       <Block
-        prevHash={this.state.prevHash}
-        setNextHash={hash => this.setNextHash(hash)}
+        blockNumber={this.state.blockList.length}
+        prevHash={this.state.prevHashArr[this.state.blockList.length]}
+        setNextHash={(blockNumber, hash) => this.setNextHash(blockNumber, hash)}
       />
     );
     this.setState(prevState => ({
@@ -30,10 +42,6 @@ class Blocks extends Component {
   render() {
     return (
       <div className="Blocks">
-        <Block
-          prevHash={this.state.prevHash}
-          setNextHash={hash => this.setNextHash(hash)}
-        />
         {this.state.blockList}
         <Button onClick={this.onAddBlockClick}>Add Block</Button>
       </div>

@@ -12,7 +12,8 @@ class Block extends Component {
     blockNonce: 0,
     blockHashValue: "",
     blockMined: false,
-    blockTouched: false
+    blockTouched: false,
+    blockNumber: this.props.blockNumber
   };
 
   onMineClick = async () => {
@@ -43,7 +44,7 @@ class Block extends Component {
 
     if (!mine) {
       await this.setState({ blockHashValue: hashValue });
-      this.props.setNextHash(hashValue);
+      this.props.setNextHash(this.state.blockNumber, hashValue);
     }
 
     if (
@@ -54,6 +55,7 @@ class Block extends Component {
         blockMined: true,
         blockHashValue: hashValue
       });
+      this.props.setNextHash(this.state.blockNumber, hashValue);
     }
   };
 
@@ -94,6 +96,7 @@ class Block extends Component {
     blockClassList = blockClassList.join(" ");
     return (
       <Form size="tiny" className={blockClassList}>
+        <div>Block: {this.state.blockNumber}</div>
         <Form.Field>
           <label>Block Difficulty</label>
           <input
