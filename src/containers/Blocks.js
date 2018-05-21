@@ -10,7 +10,8 @@ class Blocks extends Component {
     blocks: [
       {
         blockNumber: 0,
-        prevHash: ""
+        prevHash: "",
+        recalc: false
       }
     ]
   };
@@ -33,7 +34,8 @@ class Blocks extends Component {
     let newBlockList = this.state.blocks.slice().map((el, index) => {
       return {
         blockNumber: el.blockNumber,
-        prevHash: this.state.prevHashArr[el.blockNumber]
+        prevHash: this.state.prevHashArr[el.blockNumber],
+        recalc: true
       };
     });
 
@@ -61,6 +63,7 @@ class Blocks extends Component {
           key={el.blockNumber}
           blockNumber={el.blockNumber}
           prevHash={el.prevHash}
+          recalc={el.recalc}
           setNextHash={(blockNumber, hash) =>
             this.setNextHash(blockNumber, hash)
           }

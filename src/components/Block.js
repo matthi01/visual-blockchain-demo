@@ -8,12 +8,10 @@ class Block extends Component {
   state = {
     blockData: "I love vittoria",
     blockDifficulty: 3,
-    previousHash: this.props.prevHash,
     blockNonce: 0,
     blockHashValue: "",
     blockMined: false,
-    blockTouched: false,
-    blockNumber: this.props.blockNumber
+    blockTouched: false
   };
 
   onMineClick = async () => {
@@ -36,7 +34,7 @@ class Block extends Component {
   hashBlock = async (currNonce, mine) => {
     let hash = sha256.create();
     let hashValue;
-    hash.update(this.state.previousHash);
+    hash.update(this.props.prevHash);
     hash.update(this.state.blockData);
     hash.update(currNonce.toString());
 
@@ -44,7 +42,7 @@ class Block extends Component {
 
     if (!mine) {
       await this.setState({ blockHashValue: hashValue });
-      this.props.setNextHash(this.state.blockNumber, hashValue);
+      this.props.setNextHash(this.props.blockNumber, hashValue);
     }
 
     if (
@@ -55,7 +53,7 @@ class Block extends Component {
         blockMined: true,
         blockHashValue: hashValue
       });
-      this.props.setNextHash(this.state.blockNumber, hashValue);
+      this.props.setNextHash(this.props.blockNumber, hashValue);
     }
   };
 
@@ -92,12 +90,6 @@ class Block extends Component {
   };
 
   render() {
-    if (this.state.blockNumber === 1) {
-      console.log("previousHash", this.props.prevHash);
-      console.log("blockNonce", this.state.blockNonce);
-      console.log("blockData", this.state.blockData);
-    }
-
     let blockClassList = ["Block__Form"];
     if (this.state.blockTouched && this.state.blockMined) {
       blockClassList.push("Mined");
@@ -107,7 +99,7 @@ class Block extends Component {
     blockClassList = blockClassList.join(" ");
     return (
       <Form size="tiny" className={blockClassList}>
-        <div>Block: {this.state.blockNumber}</div>
+        <div>Block: {this.props.blockNumber}</div>
         <Form.Field>
           <label>Block Difficulty</label>
           <input
