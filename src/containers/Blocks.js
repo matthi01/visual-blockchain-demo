@@ -7,12 +7,11 @@ import "./Blocks.css";
 class Blocks extends Component {
   state = {
     prevHashArr: [""],
-    blockList: [
-      <Block
-        blockNumber={0}
-        prevHash=""
-        setNextHash={(blockNumber, hash) => this.setNextHash(blockNumber, hash)}
-      />
+    blocks: [
+      {
+        blockNumber: 0,
+        prevHash: ""
+      }
     ]
   };
 
@@ -23,26 +22,55 @@ class Blocks extends Component {
     this.setState({
       prevHashArr: newPrevHashArr
     });
-    console.log(newPrevHashArr);
+
+    // if an earlier block was altered, cycle through all hashes
+    if (blockNumber + 1 < this.state.blocks.length) {
+      this.cycleHashNumbers();
+    }
+  };
+
+  cycleHashNumbers = () => {
+    let newBlockList = this.state.blocks.slice().map((el, index) => {
+      return {
+        blockNumber: el.blockNumber,
+        prevHash: this.state.prevHashArr[el.blockNumber]
+      };
+    });
+
+    this.setState({ blocks: newBlockList });
   };
 
   onAddBlockClick = () => {
-    let newBlock = (
-      <Block
-        blockNumber={this.state.blockList.length}
-        prevHash={this.state.prevHashArr[this.state.blockList.length]}
-        setNextHash={(blockNumber, hash) => this.setNextHash(blockNumber, hash)}
-      />
-    );
+    let newBlock = {
+      blockNumber: this.state.blocks.length,
+      prevHash: this.state.prevHashArr[this.state.blocks.length]
+    };
+
     this.setState(prevState => ({
-      blockList: [...prevState.blockList, newBlock]
+      blocks: [...prevState.blocks, newBlock]
     }));
   };
 
   render() {
+    let blockList = this.state.blocks.map((el, index) => {
+      // console.log("index: ", index);
+      // console.log("el: ", el);
+      // console.log("");
+      return (
+        <Block
+          key={el.blockNumber}
+          blockNumber={el.blockNumber}
+          prevHash={el.prevHash}
+          setNextHash={(blockNumber, hash) =>
+            this.setNextHash(blockNumber, hash)
+          }
+        />
+      );
+    });
+
     return (
       <div className="Blocks">
-        {this.state.blockList}
+        {blockList}
         <Button onClick={this.onAddBlockClick}>Add Block</Button>
       </div>
     );

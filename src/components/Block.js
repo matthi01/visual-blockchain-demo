@@ -86,7 +86,18 @@ class Block extends Component {
     this.hashBlock(event.target.value, false);
   };
 
+  onPreviousHashChange = () => {
+    this.setState({ blockMined: false });
+    this.hashBlock(this.state.blockNonce, false);
+  };
+
   render() {
+    if (this.state.blockNumber === 1) {
+      console.log("previousHash", this.props.prevHash);
+      console.log("blockNonce", this.state.blockNonce);
+      console.log("blockData", this.state.blockData);
+    }
+
     let blockClassList = ["Block__Form"];
     if (this.state.blockTouched && this.state.blockMined) {
       blockClassList.push("Mined");
@@ -110,7 +121,8 @@ class Block extends Component {
           <input
             placeholder="Previous Hash"
             disabled
-            value={this.state.previousHash}
+            value={this.props.prevHash}
+            onChange={this.onPreviousHashChange}
           />
         </Form.Field>
         <Form.Field>
